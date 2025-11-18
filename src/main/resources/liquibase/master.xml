@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <!-- 包含所有变更文件 -->
+    <include file="db/initial-schema.xml" relativeToChangelogFile="true"/>
+    <include file="db/2025/2025-create-table.xml" relativeToChangelogFile="true"/>
+    <include file="db/2025/2025-update.xml" relativeToChangelogFile="true"/>
+</databaseChangeLog>
