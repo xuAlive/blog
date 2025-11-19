@@ -4,4 +4,10 @@
                    xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
+    <changeSet id="1763454973243-1" author="xubaolin">
+        <sql>
+            ALTER TABLE `blog`.`deepseek_dialogue_info`
+                ADD COLUMN `account` varchar(32) NULL COMMENT '账号' AFTER `update_time`;
+        </sql>
+    </changeSet>
 </databaseChangeLog>

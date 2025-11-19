@@ -2,6 +2,7 @@ package com.xu.blog.mapper;
 
 import com.xu.blog.domain.DeepseekDialogueInfo;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.xu.blog.param.vo.ds.CompletionHistoryVO;
 import com.xu.blog.param.vo.ds.CompletionVO;
 import org.apache.ibatis.annotations.Param;
 
@@ -15,7 +16,21 @@ import java.util.List;
 */
 public interface DeepseekDialogueInfoMapper extends BaseMapper<DeepseekDialogueInfo> {
 
-    List<CompletionVO> selectCompletion(@Param("dialogueId") Long dialogueId);
+    /**
+     * 根据对话ID和账号查询对话详情
+     * @param dialogueId 对话ID
+     * @param account 用户账号
+     * @return
+     */
+    List<CompletionVO> selectCompletion(@Param("dialogueId") Long dialogueId, @Param("account") String account);
+
+    /**
+     * 根据账号查询对话历史列表
+     * 按dialogue_id分组，每组只获取时间最早的content，content超过10个字符截取前10个字符
+     * @param account 用户账号
+     * @return
+     */
+    List<CompletionHistoryVO> selectCompletionHistory(@Param("account") String account);
 }
 
 

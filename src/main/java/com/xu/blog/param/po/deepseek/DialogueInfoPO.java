@@ -26,4 +26,9 @@ public class DialogueInfoPO implements Serializable {
      */
     private String content;
 
+    /**
+     * 用户账号
+     */
+    private String account;
+
 }

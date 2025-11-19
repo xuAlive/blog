@@ -40,6 +40,12 @@ public class DeepseekDialogueInfo implements Serializable {
     private String content;
 
     /**
+     * 用户账号
+     */
+    @TableField(value = "account")
+    private String account;
+
+    /**
      * 创建时间
      */
     @TableField(value = "creat_time")

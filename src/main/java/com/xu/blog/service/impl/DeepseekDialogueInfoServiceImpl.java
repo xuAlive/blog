@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.xu.blog.dao.DeepseekDialogueInfoDao;
 import com.xu.blog.domain.DeepseekDialogueInfo;
 import com.xu.blog.param.po.deepseek.DialogueInfoPO;
+import com.xu.blog.param.vo.ds.CompletionHistoryVO;
 import com.xu.blog.param.vo.ds.CompletionVO;
 import com.xu.blog.service.DeepseekDialogueInfoService;
 import com.xu.blog.mapper.DeepseekDialogueInfoMapper;
@@ -13,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -39,6 +42,8 @@ public class DeepseekDialogueInfoServiceImpl extends ServiceImpl<DeepseekDialogu
                     long millis = System.currentTimeMillis();
                     info.setDialogueId(millis);
                 }
+                // 设置用户账号
+                info.setAccount(dialogueInfoPO.getAccount());
                 this.save(info);
                 return info.getDialogueId();
             }
@@ -49,9 +54,15 @@ public class DeepseekDialogueInfoServiceImpl extends ServiceImpl<DeepseekDialogu
     }
 
     @Override
-    public List<CompletionVO> getDialogueInfo(Long dialogueId) {
-        List<CompletionVO> daoList = deepseekDialogueInfoDao.selectCompletion(dialogueId);
+    public List<CompletionVO> getDialogueInfo(Long dialogueId, String account) {
+        List<CompletionVO> daoList = deepseekDialogueInfoDao.selectCompletion(dialogueId, account);
         return daoList;
+    }
+
+    @Override
+    public List<CompletionHistoryVO> getCompletionHistoryList(String account) {
+        List<CompletionHistoryVO> historyList = deepseekDialogueInfoDao.selectCompletionHistory(account);
+        return historyList;
     }
 
 }

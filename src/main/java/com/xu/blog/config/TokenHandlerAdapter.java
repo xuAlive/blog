@@ -6,6 +6,7 @@ import com.auth0.jwt.exceptions.SignatureVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.Claim;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.xu.blog.context.UserContext;
 import com.xu.blog.enums.token.TokenEnum;
 import com.xu.blog.param.UserToken;
 import com.xu.blog.utils.JWTUtil;
@@ -68,7 +69,14 @@ public class TokenHandlerAdapter extends HandlerInterceptorAdapter {
             if (map.containsKey("user")) {
                 String tokenStr = map.get("user").asString();
                 UserToken userToken = JSON.parseObject(tokenStr, UserToken.class);
-                request.getSession().setAttribute("currentUser", userToken);
+
+                // 将用户信息存储到ThreadLocal中，供全局使用
+                UserContext.setCurrentUser(userToken);
+
+                // 同时保留session存储，兼容旧代码
+                request.getSession().setAttribute("Token", userToken);
+                request.setAttribute("currentAccount", userToken != null ? userToken.getAccount() : null);
+
                 return true;
             }
         } catch (TokenExpiredException e) {
@@ -79,5 +87,13 @@ public class TokenHandlerAdapter extends HandlerInterceptorAdapter {
             throw new RuntimeException(TokenEnum.ERROR_TOKEN_SIGN.getMessage());
         }
         return false;
+    }
+
+    /**
+     * 请求完成后清理ThreadLocal，避免内存泄漏
+     */
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
+        UserContext.clear();
     }
 }

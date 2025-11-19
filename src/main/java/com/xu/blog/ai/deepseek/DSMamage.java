@@ -46,7 +46,7 @@ public class DSMamage {
         }
         CompletionVO vo = new CompletionVO();
         BeanUtils.copyProperties(po,vo);
-        List<CompletionVO> dialogueInfo = deepseekDialogueInfoService.getDialogueInfo(vo.getDialogueId());
+        List<CompletionVO> dialogueInfo = deepseekDialogueInfoService.getDialogueInfo(vo.getDialogueId(), po.getAccount());
         if (CollectionUtils.isEmpty(dialogueInfo)){
             dialogueInfo = new ArrayList<>();
         }
@@ -73,6 +73,7 @@ public class DSMamage {
             result.setContent(choice.getMessage().getContent());
             DialogueInfoPO resultPo = new DialogueInfoPO();
             BeanUtils.copyProperties(result,resultPo);
+            resultPo.setAccount(po.getAccount());
             deepseekDialogueInfoService.saveDialogueInfo(resultPo);
         }
         return result;

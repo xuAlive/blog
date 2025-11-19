@@ -66,6 +66,12 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         userDao.insertUserLogin(sysUserLogin);
         //生成token
         UserToken userToken = new UserToken();
+        // 设置用户信息到token中
+        userToken.setAccount(sysUser.getAccount());
+        userToken.setPhone(sysUser.getPhone());
+        // 可选：设置用户名，这里暂时设置为账号，如需从user_info表获取可以额外查询
+        userToken.setUserName(sysUser.getAccount());
+
         String token = JWTUtil.createToken(userToken);
         log.info(po.getAccount()+" 登陆成功 ，返回token为 "+token);
         return Response.success(token);
