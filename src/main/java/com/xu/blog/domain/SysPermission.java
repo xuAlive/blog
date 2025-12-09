@@ -4,49 +4,62 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.io.Serializable;
-import java.util.Date;
 import lombok.Data;
 
+import java.io.Serializable;
+import java.util.Date;
+
 /**
- * 系统用户表
- * @TableName sys_user
+ * 系统权限表
+ * @TableName sys_permission
  */
-@TableName(value ="sys_user")
+@TableName(value = "sys_permission")
 @Data
-public class SysUser implements Serializable {
+public class SysPermission implements Serializable {
     /**
-     * 
+     * 主键ID
      */
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     /**
-     * 账号
+     * 权限编码
      */
-    @TableField(value = "account")
-    private String account;
+    @TableField(value = "permission_code")
+    private String permissionCode;
 
     /**
-     * 手机号
+     * 权限名称
      */
-    @TableField(value = "phone")
-    private String phone;
+    @TableField(value = "permission_name")
+    private String permissionName;
 
     /**
-     * 手机号是否验证 0-未验证(访客) 1-已验证(用户)
+     * 资源类型(API/BUTTON/DATA)
      */
-    @TableField(value = "phone_verified")
-    private Integer phoneVerified;
+    @TableField(value = "resource_type")
+    private String resourceType;
 
     /**
-     * 密码
+     * 资源路径
      */
-    @TableField(value = "password")
-    private String password;
+    @TableField(value = "resource_path")
+    private String resourcePath;
 
     /**
-     * 0 否 1 是
+     * 权限描述
+     */
+    @TableField(value = "description")
+    private String description;
+
+    /**
+     * 状态 0-禁用 1-启用
+     */
+    @TableField(value = "status")
+    private Integer status;
+
+    /**
+     * 是否删除 0-否 1-是
      */
     @TableField(value = "is_delete")
     private Integer isDelete;

@@ -32,4 +32,10 @@ public interface SysUserInfoService extends IService<SysUserInfo> {
      * @return
      */
     Response deleteAccount(String Account);
+
+    /**
+     * 获取用户列表
+     * @return
+     */
+    Response getUserList();
 }

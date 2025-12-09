@@ -8,6 +8,7 @@ import com.xu.blog.domain.SysUser;
 import com.xu.blog.domain.SysUserInfo;
 import com.xu.blog.param.po.sys.UserInfoPo;
 import com.xu.blog.param.vo.sys.UserInfoVo;
+import com.xu.blog.param.vo.sys.UserListVO;
 import com.xu.blog.service.SysUserInfoService;
 import com.xu.blog.mapper.SysUserInfoMapper;
 import com.xu.blog.utils.response.Response;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -62,8 +64,10 @@ public class SysUserInfoServiceImpl extends ServiceImpl<SysUserInfoMapper, SysUs
         }
         SysUserInfo sysUserInfo = new SysUserInfo();
         BeanUtils.copyProperties(po,sysUserInfo);
-        baseMapper.update(sysUserInfo,new QueryWrapper<SysUserInfo>().eq("account",po.getAccount()));
-        return Response.success();
+        // 使用 INSERT ... ON DUPLICATE KEY UPDATE 语句
+        // 如果 account 不存在则插入，存在则更新
+        int result = baseMapper.insertOrUpdate(sysUserInfo);
+        return result > 0 ? Response.success() : Response.error("更新失败");
     }
 
     @Transactional
@@ -76,6 +80,12 @@ public class SysUserInfoServiceImpl extends ServiceImpl<SysUserInfoMapper, SysUs
         userDao.deleteAccount(account);
         blogDao.deleteBlogAccount(account);
         return Response.success();
+    }
+
+    @Override
+    public Response getUserList() {
+        List<UserListVO> userList = baseMapper.selectUserList();
+        return Response.success(userList);
     }
 }
 

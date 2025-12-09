@@ -4,49 +4,50 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.io.Serializable;
-import java.util.Date;
 import lombok.Data;
 
+import java.io.Serializable;
+import java.util.Date;
+
 /**
- * 系统用户表
- * @TableName sys_user
+ * 系统角色表
+ * @TableName sys_role
  */
-@TableName(value ="sys_user")
+@TableName(value = "sys_role")
 @Data
-public class SysUser implements Serializable {
+public class SysRole implements Serializable {
     /**
-     * 
+     * 主键ID
      */
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     /**
-     * 账号
+     * 角色编码(ADMIN/USER/GUEST)
      */
-    @TableField(value = "account")
-    private String account;
+    @TableField(value = "role_code")
+    private String roleCode;
 
     /**
-     * 手机号
+     * 角色名称
      */
-    @TableField(value = "phone")
-    private String phone;
+    @TableField(value = "role_name")
+    private String roleName;
 
     /**
-     * 手机号是否验证 0-未验证(访客) 1-已验证(用户)
+     * 角色描述
      */
-    @TableField(value = "phone_verified")
-    private Integer phoneVerified;
+    @TableField(value = "description")
+    private String description;
 
     /**
-     * 密码
+     * 状态 0-禁用 1-启用
      */
-    @TableField(value = "password")
-    private String password;
+    @TableField(value = "status")
+    private Integer status;
 
     /**
-     * 0 否 1 是
+     * 是否删除 0-否 1-是
      */
     @TableField(value = "is_delete")
     private Integer isDelete;

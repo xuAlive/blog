@@ -4,4 +4,204 @@
                    xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
+    <!-- 创建角色表 -->
+    <changeSet id="2025-001-create-sys-role" author="xubaolin">
+        <createTable tableName="sys_role" remarks="系统角色表">
+            <column name="id" type="INT" autoIncrement="true" remarks="主键ID">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="role_code" type="VARCHAR(50)" remarks="角色编码(ADMIN/USER/GUEST)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="role_name" type="VARCHAR(100)" remarks="角色名称">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(500)" remarks="角色描述"/>
+            <column name="status" type="TINYINT" defaultValue="1" remarks="状态 0-禁用 1-启用">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_delete" type="TINYINT" defaultValue="0" remarks="是否删除 0-否 1-是">
+                <constraints nullable="false"/>
+            </column>
+            <column name="create_time" type="DATETIME" defaultValueComputed="CURRENT_TIMESTAMP" remarks="创建时间">
+                <constraints nullable="false"/>
+            </column>
+            <column name="update_time" type="DATETIME" defaultValueComputed="CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP" remarks="更新时间">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <!-- 插入默认角色数据 -->
+        <insert tableName="sys_role">
+            <column name="role_code" value="ADMIN"/>
+            <column name="role_name" value="管理员"/>
+            <column name="description" value="系统管理员，拥有所有权限"/>
+            <column name="status" value="1"/>
+        </insert>
+        <insert tableName="sys_role">
+            <column name="role_code" value="USER"/>
+            <column name="role_name" value="用户"/>
+            <column name="description" value="普通用户，已绑定手机号，拥有部分功能权限"/>
+            <column name="status" value="1"/>
+        </insert>
+        <insert tableName="sys_role">
+            <column name="role_code" value="GUEST"/>
+            <column name="role_name" value="访客"/>
+            <column name="description" value="访客用户，未绑定手机号，仅查看权限"/>
+            <column name="status" value="1"/>
+        </insert>
+    </changeSet>
+
+    <!-- 创建菜单表 -->
+    <changeSet id="2025-002-create-sys-menu" author="xubaolin">
+        <createTable tableName="sys_menu" remarks="系统菜单表">
+            <column name="id" type="INT" autoIncrement="true" remarks="主键ID">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="parent_id" type="INT" defaultValue="0" remarks="父菜单ID 0表示顶级菜单">
+                <constraints nullable="false"/>
+            </column>
+            <column name="menu_name" type="VARCHAR(100)" remarks="菜单名称">
+                <constraints nullable="false"/>
+            </column>
+            <column name="menu_code" type="VARCHAR(100)" remarks="菜单编码">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="menu_type" type="TINYINT" remarks="菜单类型 1-目录 2-菜单 3-按钮">
+                <constraints nullable="false"/>
+            </column>
+            <column name="path" type="VARCHAR(200)" remarks="路由地址"/>
+            <column name="component" type="VARCHAR(200)" remarks="组件路径"/>
+            <column name="icon" type="VARCHAR(100)" remarks="菜单图标"/>
+            <column name="sort_order" type="INT" defaultValue="0" remarks="排序号">
+                <constraints nullable="false"/>
+            </column>
+            <column name="visible" type="TINYINT" defaultValue="1" remarks="是否可见 0-隐藏 1-显示">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="TINYINT" defaultValue="1" remarks="状态 0-禁用 1-启用">
+                <constraints nullable="false"/>
+            </column>
+            <column name="permission" type="VARCHAR(200)" remarks="权限标识"/>
+            <column name="is_delete" type="TINYINT" defaultValue="0" remarks="是否删除 0-否 1-是">
+                <constraints nullable="false"/>
+            </column>
+            <column name="create_time" type="DATETIME" defaultValueComputed="CURRENT_TIMESTAMP" remarks="创建时间">
+                <constraints nullable="false"/>
+            </column>
+            <column name="update_time" type="DATETIME" defaultValueComputed="CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP" remarks="更新时间">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <!-- 添加索引 -->
+        <createIndex tableName="sys_menu" indexName="idx_parent_id">
+            <column name="parent_id"/>
+        </createIndex>
+    </changeSet>
+
+    <!-- 创建用户角色关联表 -->
+    <changeSet id="2025-003-create-sys-user-role" author="xubaolin">
+        <createTable tableName="sys_user_role" remarks="用户角色关联表">
+            <column name="id" type="INT" autoIncrement="true" remarks="主键ID">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="account" type="VARCHAR(50)" remarks="用户账号">
+                <constraints nullable="false"/>
+            </column>
+            <column name="role_id" type="INT" remarks="角色ID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="create_time" type="DATETIME" defaultValueComputed="CURRENT_TIMESTAMP" remarks="创建时间">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <!-- 添加唯一索引，防止重复分配角色 -->
+        <createIndex tableName="sys_user_role" indexName="idx_account_role" unique="true">
+            <column name="account"/>
+            <column name="role_id"/>
+        </createIndex>
+    </changeSet>
+
+    <!-- 创建角色菜单关联表 -->
+    <changeSet id="2025-004-create-sys-role-menu" author="xubaolin">
+        <createTable tableName="sys_role_menu" remarks="角色菜单关联表">
+            <column name="id" type="INT" autoIncrement="true" remarks="主键ID">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="role_id" type="INT" remarks="角色ID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="menu_id" type="INT" remarks="菜单ID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="create_time" type="DATETIME" defaultValueComputed="CURRENT_TIMESTAMP" remarks="创建时间">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <!-- 添加唯一索引，防止重复分配菜单 -->
+        <createIndex tableName="sys_role_menu" indexName="idx_role_menu" unique="true">
+            <column name="role_id"/>
+            <column name="menu_id"/>
+        </createIndex>
+    </changeSet>
+
+    <!-- 创建权限表 -->
+    <changeSet id="2025-005-create-sys-permission" author="xubaolin">
+        <createTable tableName="sys_permission" remarks="系统权限表">
+            <column name="id" type="INT" autoIncrement="true" remarks="主键ID">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="permission_code" type="VARCHAR(100)" remarks="权限编码">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="permission_name" type="VARCHAR(100)" remarks="权限名称">
+                <constraints nullable="false"/>
+            </column>
+            <column name="resource_type" type="VARCHAR(50)" remarks="资源类型(API/BUTTON/DATA)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="resource_path" type="VARCHAR(500)" remarks="资源路径"/>
+            <column name="description" type="VARCHAR(500)" remarks="权限描述"/>
+            <column name="status" type="TINYINT" defaultValue="1" remarks="状态 0-禁用 1-启用">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_delete" type="TINYINT" defaultValue="0" remarks="是否删除 0-否 1-是">
+                <constraints nullable="false"/>
+            </column>
+            <column name="create_time" type="DATETIME" defaultValueComputed="CURRENT_TIMESTAMP" remarks="创建时间">
+                <constraints nullable="false"/>
+            </column>
+            <column name="update_time" type="DATETIME" defaultValueComputed="CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP" remarks="更新时间">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!-- 创建角色权限关联表 -->
+    <changeSet id="2025-006-create-sys-role-permission" author="xubaolin">
+        <createTable tableName="sys_role_permission" remarks="角色权限关联表">
+            <column name="id" type="INT" autoIncrement="true" remarks="主键ID">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="role_id" type="INT" remarks="角色ID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="permission_id" type="INT" remarks="权限ID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="create_time" type="DATETIME" defaultValueComputed="CURRENT_TIMESTAMP" remarks="创建时间">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <!-- 添加唯一索引，防止重复分配权限 -->
+        <createIndex tableName="sys_role_permission" indexName="idx_role_permission" unique="true">
+            <column name="role_id"/>
+            <column name="permission_id"/>
+        </createIndex>
+    </changeSet>
+
 </databaseChangeLog>

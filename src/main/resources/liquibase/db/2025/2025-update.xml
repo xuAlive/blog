@@ -10,4 +10,52 @@
                 ADD COLUMN `account` varchar(32) NULL COMMENT '账号' AFTER `update_time`;
         </sql>
     </changeSet>
+
+    <!-- 给sys_user表添加手机号验证字段 -->
+    <changeSet id="2025-007-add-phone-verified" author="xubaolin">
+        <addColumn tableName="sys_user">
+            <column name="phone_verified" type="TINYINT" defaultValue="0" remarks="手机号是否验证 0-未验证(访客) 1-已验证(用户)" afterColumn="phone">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <!-- 为admin账号分配ADMIN最高权限角色 -->
+    <changeSet id="2025-008-assign-admin-role" author="xubaolin">
+        <sql>
+            -- 为admin账号分配ADMIN角色（角色ID为1）
+            INSERT INTO sys_user_role (account, role_id, create_time)
+            SELECT 'admin', 1, NOW()
+            FROM DUAL
+            WHERE NOT EXISTS (
+                SELECT 1 FROM sys_user_role
+                WHERE account = 'admin' AND role_id = 1
+            );
+
+            -- 同时将admin账号的手机号设为已验证状态
+            UPDATE sys_user
+            SET phone_verified = 1
+            WHERE account = 'admin';
+        </sql>
+    </changeSet>
+
+    <!-- 为sys_user_info表的account字段添加唯一约束，确保INSERT...ON DUPLICATE KEY UPDATE正常工作 -->
+    <changeSet id="2025-009-add-unique-constraint-account" author="xubaolin">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists tableName="sys_user_info" indexName="uk_account"/>
+            </not>
+        </preConditions>
+        <addUniqueConstraint
+                tableName="sys_user_info"
+                columnNames="account"
+                constraintName="uk_account"/>
+    </changeSet>
+
+    <!-- 为sys_user_login表添加address字段，用于存储登录IP的地理位置信息 -->
+    <changeSet id="2025-010-add-address-to-sys-user-login" author="xubaolin">
+        <addColumn tableName="sys_user_login">
+            <column name="address" type="VARCHAR(200)" remarks="登录IP地址对应的地理位置" afterColumn="ip"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

@@ -1,14 +1,20 @@
 package com.xu.blog.controller;
 
+import com.xu.blog.annotation.RequireRole;
+import com.xu.blog.dao.SysUserDao;
 import com.xu.blog.param.po.sys.LoginUserPo;
 import com.xu.blog.param.po.sys.UserInfoPo;
+import com.xu.blog.param.vo.sys.UserLoginVO;
 import com.xu.blog.service.SysUserInfoService;
 import com.xu.blog.service.SysUserService;
+import com.xu.blog.utils.SessionUtil;
 import com.xu.blog.utils.response.Response;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @RequestMapping("/blog/sys")
 @RestController
@@ -18,6 +24,9 @@ public class SysController {
 
     @Autowired
     private SysUserInfoService sysUserInfoService;
+
+    @Autowired
+    private SysUserDao sysUserDao;
 
     @PostMapping("/login")
     public Response login(@RequestBody LoginUserPo po, HttpServletRequest servletRequest){
@@ -31,11 +40,35 @@ public class SysController {
 
     @GetMapping("/getUserInfoByAccount")
     public Response getUserInfoByAccount(@RequestParam(value = "account",required = false) String account){
+        if (StringUtils.isBlank( account)){
+            account = SessionUtil.getCurrentAccount();
+        }
         return sysUserInfoService.getUserInfoByAccount(account);
     }
 
     @PostMapping("/updateUserInfo")
     public Response updateUserInfo(@RequestBody UserInfoPo po){
         return sysUserInfoService.updateUserInfo(po);
+    }
+
+    /**
+     * 获取用户列表
+     */
+    @GetMapping("/getUserList")
+    @RequireRole("ADMIN")
+    public Response getUserList(){
+        return sysUserInfoService.getUserList();
+    }
+
+    /**
+     * 查询用户登录记录（按账号和IP分组）
+     * @param account 账号（可选，不传则查询所有账号）
+     * @return 登录记录列表
+     */
+    @GetMapping("/getLoginRecords")
+    @RequireRole("ADMIN")
+    public Response getLoginRecords(@RequestParam(value = "account", required = false) String account){
+         List<UserLoginVO> loginRecords = sysUserDao.getLoginRecords(account);
+         return Response.success(loginRecords);
     }
 }

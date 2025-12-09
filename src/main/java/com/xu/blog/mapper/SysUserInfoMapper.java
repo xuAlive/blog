@@ -3,7 +3,10 @@ package com.xu.blog.mapper;
 import com.xu.blog.domain.SysUserInfo;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.xu.blog.param.vo.sys.UserInfoVo;
+import com.xu.blog.param.vo.sys.UserListVO;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
 * @author xubaolin
@@ -16,6 +19,16 @@ public interface SysUserInfoMapper extends BaseMapper<SysUserInfo> {
     UserInfoVo selectByAccount(@Param("account") String account);
 
     void delteUserInfo(@Param("account") String account);
+
+    /**
+     * 获取用户列表（关联sys_user和sys_user_info）
+     */
+    List<UserListVO> selectUserList();
+
+    /**
+     * 插入或更新用户信息（如果account存在则更新，不存在则插入）
+     */
+    int insertOrUpdate(SysUserInfo sysUserInfo);
 }
 
 

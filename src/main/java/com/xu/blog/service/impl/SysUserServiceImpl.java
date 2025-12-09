@@ -3,12 +3,14 @@ package com.xu.blog.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.xu.blog.dao.SysUserDao;
+import com.xu.blog.domain.SysRole;
 import com.xu.blog.domain.SysUser;
 import com.xu.blog.domain.SysUserLogin;
 import com.xu.blog.mapper.SysUserLoginMapper;
 import com.xu.blog.mapper.SysUserMapper;
 import com.xu.blog.param.UserToken;
 import com.xu.blog.param.po.sys.LoginUserPo;
+import com.xu.blog.service.SysRoleService;
 import com.xu.blog.service.SysUserService;
 import com.xu.blog.utils.JWTUtil;
 import com.xu.blog.utils.response.Response;
@@ -16,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -33,6 +36,9 @@ import java.util.Objects;
 public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> implements SysUserService{
     @Autowired
     private SysUserDao userDao;
+
+    @Autowired
+    private SysRoleService sysRoleService;
 
 
     @Override
@@ -78,6 +84,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Response register(LoginUserPo po) {
         //判断对象是否为空
         if(po == null){
@@ -91,10 +98,30 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         if (!CollectionUtils.isEmpty(sysUsers)){
             return Response.error("账号已存在");
         }
-        SysUser sysUser = new SysUser();
-        BeanUtils.copyProperties(po,sysUser);
-        int insert = baseMapper.insert(sysUser);
-        return Response.checkResult(insert == 1);
+
+        try {
+            SysUser sysUser = new SysUser();
+            BeanUtils.copyProperties(po,sysUser);
+            // 新注册用户默认手机号未验证
+            sysUser.setPhoneVerified(0);
+            int insert = baseMapper.insert(sysUser);
+
+            if (insert == 1) {
+                // 为新用户分配GUEST角色
+                SysRole guestRole = sysRoleService.selectByRoleCode("GUEST");
+                if (guestRole != null) {
+                    sysRoleService.assignRoleToUser(po.getAccount(), guestRole.getId());
+                    log.info("用户{}注册成功，分配GUEST角色", po.getAccount());
+                } else {
+                    log.warn("GUEST角色不存在，请检查数据库");
+                }
+                return Response.success("注册成功");
+            }
+            return Response.error("注册失败");
+        } catch (Exception e) {
+            log.error("注册失败", e);
+            throw new RuntimeException("注册失败");
+        }
     }
 
 

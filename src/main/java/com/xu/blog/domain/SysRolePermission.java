@@ -4,40 +4,35 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.io.Serializable;
-import java.util.Date;
 import lombok.Data;
 
+import java.io.Serializable;
+import java.util.Date;
+
 /**
- * 用户登陆信息表
- * @TableName sys_user_login
+ * 角色权限关联表
+ * @TableName sys_role_permission
  */
-@TableName(value ="sys_user_login")
+@TableName(value = "sys_role_permission")
 @Data
-public class SysUserLogin implements Serializable {
+public class SysRolePermission implements Serializable {
     /**
-     * 
+     * 主键ID
      */
-    @TableId(value = "id",type = IdType.AUTO)
+    @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     /**
-     * 账号
+     * 角色ID
      */
-    @TableField(value = "account")
-    private String account;
+    @TableField(value = "role_id")
+    private Integer roleId;
 
     /**
-     * 登录时ip
+     * 权限ID
      */
-    @TableField(value = "ip")
-    private String ip;
-
-    /**
-     * 登录IP地址对应的地理位置
-     */
-    @TableField(value = "address")
-    private String address;
+    @TableField(value = "permission_id")
+    private Integer permissionId;
 
     /**
      * 创建时间

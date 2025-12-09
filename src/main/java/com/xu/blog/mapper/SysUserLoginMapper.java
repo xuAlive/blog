@@ -2,6 +2,10 @@ package com.xu.blog.mapper;
 
 import com.xu.blog.domain.SysUserLogin;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.xu.blog.param.vo.sys.UserLoginVO;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
 * @author xubaolin
@@ -11,6 +15,12 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 */
 public interface SysUserLoginMapper extends BaseMapper<SysUserLogin> {
 
+    /**
+     * 按账号和IP分组查询登录记录
+     * @param account 账号（可选，为null时查询所有账号）
+     * @return 登录记录列表
+     */
+    List<UserLoginVO> selectLoginRecordsGroupByAccountAndIp(@Param("account") String account);
 }
 
 
