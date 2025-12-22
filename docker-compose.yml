@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  blog:
+    build: .
+    container_name: blog-app
+    ports:
+      - "${SERVER_PORT:-6101}:${SERVER_PORT:-6101}"
+    environment:
+      # 应用端口
+      - SERVER_PORT=${SERVER_PORT:-6101}
+      # 数据库配置
+      - DB_HOST=${DB_HOST:-mysql}
+      - DB_PORT=${DB_PORT:-3306}
+      - DB_NAME=${DB_NAME:-blog}
+      - DB_USERNAME=${DB_USERNAME:-root}
+      - DB_PASSWORD=${DB_PASSWORD:-admin123456}
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - blog-network
+    restart: unless-stopped
+
+  mysql:
+    image: mysql:8.0
+    container_name: blog-mysql
+    ports:
+      - "${DB_EXPOSE_PORT:-3306}:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD:-admin123456}
+      - MYSQL_DATABASE=${DB_NAME:-blog}
+      - TZ=Asia/Shanghai
+    volumes:
+      - mysql-data:/var/lib/mysql
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --default-time-zone=+08:00
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - blog-network
+    restart: unless-stopped
+
+networks:
+  blog-network:
+    driver: bridge
+
+volumes:
+  mysql-data:
