@@ -1,4 +1,4 @@
-package com.xu.blog.controller;
+package com.xu.blog.controller.sys;
 
 import com.xu.blog.annotation.RequireRole;
 import com.xu.blog.dao.SysUserDao;

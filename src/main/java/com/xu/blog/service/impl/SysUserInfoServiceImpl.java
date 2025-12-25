@@ -12,11 +12,11 @@ import com.xu.blog.param.vo.sys.UserListVO;
 import com.xu.blog.service.SysUserInfoService;
 import com.xu.blog.mapper.SysUserInfoMapper;
 import com.xu.blog.utils.response.Response;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Objects;
@@ -54,6 +54,7 @@ public class SysUserInfoServiceImpl extends ServiceImpl<SysUserInfoMapper, SysUs
         return Response.success(userInfoVo);
     }
 
+    @Transactional
     @Override
     public Response updateUserInfo(UserInfoPo po) {
         if (Objects.isNull(po)){
@@ -64,6 +65,13 @@ public class SysUserInfoServiceImpl extends ServiceImpl<SysUserInfoMapper, SysUs
         }
         SysUserInfo sysUserInfo = new SysUserInfo();
         BeanUtils.copyProperties(po,sysUserInfo);
+        // 修改sys_user 中的手机号
+        if (StringUtils.isNotBlank(sysUserInfo.getPhone())){
+            SysUser sysUser = new SysUser();
+            sysUser.setPhone(sysUserInfo.getPhone());
+            sysUser.setAccount(po.getAccount());
+            userDao.updateUser(sysUser,new QueryWrapper<SysUser>().eq("account",po.getAccount()));
+        }
         // 使用 INSERT ... ON DUPLICATE KEY UPDATE 语句
         // 如果 account 不存在则插入，存在则更新
         int result = baseMapper.insertOrUpdate(sysUserInfo);

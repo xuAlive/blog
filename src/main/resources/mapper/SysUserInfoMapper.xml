@@ -54,7 +54,7 @@
             ui.user_name AS userName,
             ui.name,
             ui.email,
-            u.phone,
+            ui.phone,
             u.is_delete AS isDelete,
             u.create_time AS createTime,
             u.update_time AS updateTime

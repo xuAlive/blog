@@ -1,5 +1,6 @@
 package com.xu.blog.dao;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.xu.blog.domain.SysUser;
 import com.xu.blog.domain.SysUserLogin;
@@ -40,6 +41,10 @@ public class SysUserDao {
         }
         // 一个账号只会对应一条数据
         return sysUserList.get(0);
+    }
+
+    public Integer updateUser(SysUser sysUser, Wrapper<SysUser>  wrapper){
+        return userMapper.update(sysUser,wrapper);
     }
 
     /**

@@ -17,9 +17,9 @@ public class WebConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         // 添加CORS映射，允许来自特定域的请求访问
         registry.addMapping("/**")
-                .allowedOrigins("http://127.0.0.1:5174") // 允许来自特定域的请求（根据你的前端部署地址进行修改）
-                .allowedMethods("POST", "GET", "PUT", "OPTIONS", "DELETE") // 允许的请求方法（根据需要添加其他方法）
-                .allowedHeaders("*") // 允许的请求头部（根据需要添加其他头部）
+                .allowedOrigins("*") // 允许所有来源
+                .allowedMethods("POST", "GET", "PUT", "OPTIONS", "DELETE") // 允许的请求方法
+                .allowedHeaders("*") // 允许的请求头部
                 .allowCredentials(true); // 允许携带凭据
     }
 

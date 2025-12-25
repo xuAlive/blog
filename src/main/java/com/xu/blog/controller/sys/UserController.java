@@ -1,4 +1,4 @@
-package com.xu.blog.controller;
+package com.xu.blog.controller.sys;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.xu.blog.domain.SysRole;

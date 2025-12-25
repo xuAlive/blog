@@ -4,22 +4,12 @@
                    xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-    <changeSet id="1763454973243-1" author="xubaolin">
+    <changeSet id="1766460369926-1" author="xubaolin">
         <sql>
-            ALTER TABLE `blog`.`deepseek_dialogue_info`
-                ADD COLUMN `account` varchar(32) NULL COMMENT '账号' AFTER `update_time`;
+            INSERT INTO `blog`.`sys_user`(`id`, `account`, `phone`, `phone_verified`, `password`, `is_delete`, `create_time`, `update_time`) VALUES (1, 'admin', '18333333333', 0, '123456', 0, now(), now());
+            INSERT INTO `blog`.`sys_user_info`(`id`, `account`, `phone`, `name`, `user_name`, `birthday`, `age`, `sex`, `email`, `id_card`, `intro`, `is_delete`, `create_time`, `update_time`) VALUES (1, 'admin', '18333333333', '川', '王木木', '1999-01-11', 26, 1, NULL, NULL, '我是管理员', 0, '2025-12-23 10:46:11', '2025-12-23 11:25:37');
         </sql>
     </changeSet>
-
-    <!-- 给sys_user表添加手机号验证字段 -->
-    <changeSet id="2025-007-add-phone-verified" author="xubaolin">
-        <addColumn tableName="sys_user">
-            <column name="phone_verified" type="TINYINT" defaultValue="0" remarks="手机号是否验证 0-未验证(访客) 1-已验证(用户)" afterColumn="phone">
-                <constraints nullable="false"/>
-            </column>
-        </addColumn>
-    </changeSet>
-
     <!-- 为admin账号分配ADMIN最高权限角色 -->
     <changeSet id="2025-008-assign-admin-role" author="xubaolin">
         <sql>
@@ -39,23 +29,4 @@
         </sql>
     </changeSet>
 
-    <!-- 为sys_user_info表的account字段添加唯一约束，确保INSERT...ON DUPLICATE KEY UPDATE正常工作 -->
-    <changeSet id="2025-009-add-unique-constraint-account" author="xubaolin">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <indexExists tableName="sys_user_info" indexName="uk_account"/>
-            </not>
-        </preConditions>
-        <addUniqueConstraint
-                tableName="sys_user_info"
-                columnNames="account"
-                constraintName="uk_account"/>
-    </changeSet>
-
-    <!-- 为sys_user_login表添加address字段，用于存储登录IP的地理位置信息 -->
-    <changeSet id="2025-010-add-address-to-sys-user-login" author="xubaolin">
-        <addColumn tableName="sys_user_login">
-            <column name="address" type="VARCHAR(200)" remarks="登录IP地址对应的地理位置" afterColumn="ip"/>
-        </addColumn>
-    </changeSet>
 </databaseChangeLog>
