@@ -29,13 +29,23 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     @Override
     public List<SysMenu> getMenuTreeByAccount(String account) {
         List<SysMenu> menus = baseMapper.selectMenusByAccount(account);
-        return buildMenuTree(menus, 0);
+        List<SysMenu> result = new ArrayList<>();
+        // 添加侧边栏菜单（parent_id=0的一级目录及其子菜单）
+        result.addAll(buildMenuTree(menus, 0));
+        // 添加顶部菜单（parent_id=-1的特殊菜单，显示在右上角）
+        result.addAll(buildMenuTree(menus, -1));
+        return result;
     }
 
     @Override
     public List<SysMenu> getAllMenuTree() {
         List<SysMenu> menus = baseMapper.selectAllEnabledMenus();
-        return buildMenuTree(menus, 0);
+        List<SysMenu> result = new ArrayList<>();
+        // 添加侧边栏菜单（parent_id=0的一级目录及其子菜单）
+        result.addAll(buildMenuTree(menus, 0));
+        // 添加顶部菜单（parent_id=-1的特殊菜单，显示在右上角）
+        result.addAll(buildMenuTree(menus, -1));
+        return result;
     }
 
     @Override

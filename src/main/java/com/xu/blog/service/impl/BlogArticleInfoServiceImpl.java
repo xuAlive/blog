@@ -31,8 +31,8 @@ public class BlogArticleInfoServiceImpl extends ServiceImpl<BlogArticleInfoMappe
         }
         BlogArticleInfo blogArticleInfo = new BlogArticleInfo();
         BeanUtils.copyProperties(po,blogArticleInfo);
-        saveOrUpdate(blogArticleInfo);
-        return null;
+        boolean result = saveOrUpdate(blogArticleInfo);
+        return Response.checkResult(result);
     }
 
     @Override
@@ -62,6 +62,9 @@ public class BlogArticleInfoServiceImpl extends ServiceImpl<BlogArticleInfoMappe
         QueryWrapper<BlogArticleInfo> queryWrapper = new QueryWrapper<>();
         if (!StringUtils.isEmpty(po.getAccount())){
             queryWrapper.eq("account",po.getAccount());
+        } else {
+            // 博客广场：不传account时只查询已发布的文章
+            queryWrapper.eq("status", 1);
         }
         if (!StringUtils.isEmpty(po.getTitle())){
             queryWrapper.like("title",po.getTitle());

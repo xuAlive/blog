@@ -31,12 +31,16 @@ public class TokenHandlerAdapter extends HandlerInterceptorAdapter {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+        // OPTIONS 预检请求直接放行，不验证 token
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+            return true;
+        }
+
         try {
             // 从 http 请求头中取出 token
             String token = request.getHeader(TokenEnum.HEADER_TOKEN_KEY.getCode());
             if (StringUtils.isBlank(token)) {
-                return true;
-//                throw new RuntimeException(TokenEnum.IS_TOKEN_NULL.getMessage());
+                throw new RuntimeException(TokenEnum.IS_TOKEN_NULL.getMessage());
             }
 
             /**
@@ -49,13 +53,13 @@ public class TokenHandlerAdapter extends HandlerInterceptorAdapter {
             Long time5 = time5int * 1000L  ;
             Long time10 = time5 - 1000 * 60 * 1;
 
-//            String md51 = DigestUtils.md5DigestAsHex((TokenEnum.KEY.getCode() + time5).getBytes()).toUpperCase();
-//            if (!str[1].equals(md51)) {
-//                String md52 = DigestUtils.md5DigestAsHex((TokenEnum.KEY.getCode() + time10).getBytes()).toUpperCase();
-//                if (!str[1].equals(md52)) {
-//                    throw new RuntimeException(TokenEnum.ERROR_TOKEN_ANALYSIS.getMessage());
-//                }
-//            }
+            String md51 = DigestUtils.md5DigestAsHex((TokenEnum.KEY.getCode() + time5).getBytes()).toUpperCase();
+            if (!str[1].equals(md51)) {
+                String md52 = DigestUtils.md5DigestAsHex((TokenEnum.KEY.getCode() + time10).getBytes()).toUpperCase();
+                if (!str[1].equals(md52)) {
+                    throw new RuntimeException(TokenEnum.ERROR_TOKEN_ANALYSIS.getMessage());
+                }
+            }
 
             /**
              * 解析token并放入session

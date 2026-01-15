@@ -39,7 +39,7 @@ public class PermissionController {
     @GetMapping("/getAllPermissions")
     @RequireRole("ADMIN")
     public Response getAllPermissions() {
-        List<SysPermission> permissions = sysPermissionService.list();
+        List<SysPermission> permissions = sysPermissionService.getAllValidPermissions();
         return Response.success(permissions);
     }
 

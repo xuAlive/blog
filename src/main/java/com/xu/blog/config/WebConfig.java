@@ -17,10 +17,12 @@ public class WebConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         // 添加CORS映射，允许来自特定域的请求访问
         registry.addMapping("/**")
-                .allowedOrigins("*") // 允许所有来源
+                .allowedOriginPatterns("*") // 允许所有来源（使用 patterns 支持 credentials）
                 .allowedMethods("POST", "GET", "PUT", "OPTIONS", "DELETE") // 允许的请求方法
                 .allowedHeaders("*") // 允许的请求头部
-                .allowCredentials(true); // 允许携带凭据
+                .exposedHeaders("*") // 暴露的响应头
+                .allowCredentials(true) // 允许携带凭据
+                .maxAge(3600); // 预检请求缓存时间
     }
 
     @Override

@@ -60,4 +60,12 @@ public class SysPermissionServiceImpl extends ServiceImpl<SysPermissionMapper, S
             throw new RuntimeException("分配权限失败");
         }
     }
+
+    @Override
+    public List<SysPermission> getAllValidPermissions() {
+        QueryWrapper<SysPermission> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("is_delete", 0)
+                .orderByAsc("id");
+        return this.list(queryWrapper);
+    }
 }
