@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <!-- 创建班次表 -->
+    <changeSet id="2026-001" author="schedule-app">
+        <createTable tableName="shift" remarks="班次表">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="shift_code" type="VARCHAR(50)" remarks="班次编码">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="shift_name" type="VARCHAR(100)" remarks="班次名称">
+                <constraints nullable="false"/>
+            </column>
+            <column name="start_time" type="TIME" remarks="开始时间"/>
+            <column name="end_time" type="TIME" remarks="结束时间"/>
+            <column name="color" type="VARCHAR(20)" remarks="班次颜色"/>
+            <column name="description" type="VARCHAR(500)" remarks="描述"/>
+            <column name="status" type="TINYINT" defaultValue="1" remarks="状态：1-启用 0-禁用"/>
+            <column name="create_time" type="DATETIME" defaultValueComputed="CURRENT_TIMESTAMP" remarks="创建时间"/>
+            <column name="update_time" type="DATETIME" defaultValueComputed="CURRENT_TIMESTAMP" remarks="更新时间"/>
+            <column name="is_delete" type="TINYINT" defaultValue="0" remarks="是否删除：0-否 1-是"/>
+        </createTable>
+    </changeSet>
+
+    <!-- 创建排班记录表 -->
+    <changeSet id="2026-002" author="schedule-app">
+        <createTable tableName="schedule" remarks="排班记录表">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="account" type="VARCHAR(100)" remarks="员工账号">
+                <constraints nullable="false"/>
+            </column>
+            <column name="employee_name" type="VARCHAR(100)" remarks="员工姓名"/>
+            <column name="schedule_date" type="DATE" remarks="排班日期">
+                <constraints nullable="false"/>
+            </column>
+            <column name="shift_id" type="BIGINT" remarks="班次ID"/>
+            <column name="shift_name" type="VARCHAR(100)" remarks="班次名称"/>
+            <column name="status" type="TINYINT" defaultValue="1" remarks="状态：1-正常 2-请假 3-调休 4-加班"/>
+            <column name="remark" type="VARCHAR(500)" remarks="备注"/>
+            <column name="create_time" type="DATETIME" defaultValueComputed="CURRENT_TIMESTAMP" remarks="创建时间"/>
+            <column name="update_time" type="DATETIME" defaultValueComputed="CURRENT_TIMESTAMP" remarks="更新时间"/>
+            <column name="create_by" type="VARCHAR(100)" remarks="创建人"/>
+            <column name="is_delete" type="TINYINT" defaultValue="0" remarks="是否删除：0-否 1-是"/>
+        </createTable>
+
+        <!-- 添加索引 -->
+        <createIndex tableName="schedule" indexName="idx_schedule_account">
+            <column name="account"/>
+        </createIndex>
+        <createIndex tableName="schedule" indexName="idx_schedule_date">
+            <column name="schedule_date"/>
+        </createIndex>
+        <createIndex tableName="schedule" indexName="idx_schedule_account_date">
+            <column name="account"/>
+            <column name="schedule_date"/>
+        </createIndex>
+    </changeSet>
+
+    <!-- 插入默认班次数据 -->
+    <changeSet id="2026-003" author="schedule-app">
+        <insert tableName="shift">
+            <column name="shift_code" value="MORNING"/>
+            <column name="shift_name" value="早班"/>
+            <column name="start_time" value="08:00:00"/>
+            <column name="end_time" value="16:00:00"/>
+            <column name="color" value="#4CAF50"/>
+            <column name="description" value="早班：8:00 - 16:00"/>
+            <column name="status" value="1"/>
+        </insert>
+        <insert tableName="shift">
+            <column name="shift_code" value="AFTERNOON"/>
+            <column name="shift_name" value="中班"/>
+            <column name="start_time" value="14:00:00"/>
+            <column name="end_time" value="22:00:00"/>
+            <column name="color" value="#2196F3"/>
+            <column name="description" value="中班：14:00 - 22:00"/>
+            <column name="status" value="1"/>
+        </insert>
+        <insert tableName="shift">
+            <column name="shift_code" value="NIGHT"/>
+            <column name="shift_name" value="晚班"/>
+            <column name="start_time" value="22:00:00"/>
+            <column name="end_time" value="08:00:00"/>
+            <column name="color" value="#9C27B0"/>
+            <column name="description" value="晚班：22:00 - 次日8:00"/>
+            <column name="status" value="1"/>
+        </insert>
+        <insert tableName="shift">
+            <column name="shift_code" value="REST"/>
+            <column name="shift_name" value="休息"/>
+            <column name="color" value="#9E9E9E"/>
+            <column name="description" value="休息日"/>
+            <column name="status" value="1"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

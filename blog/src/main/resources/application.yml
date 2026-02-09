@@ -1,0 +1,54 @@
+# 服务配置
+server:
+  port: ${SERVER_PORT:6101}
+
+spring:
+  application:
+    name: blog
+
+  # 数据源配置（支持环境变量）
+  datasource:
+    url: jdbc:mysql://${DB_HOST:139.196.156.81}:${DB_PORT:3306}/${DB_NAME:blog}?useSSL=false&serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf8&connectionCollation=utf8mb4_general_ci
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:Root@123}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    # Druid 连接池配置
+    druid:
+      initial-size: 5
+      min-idle: 10
+      max-active: 200
+      max-wait: 60000
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 300000
+      validation-query: SELECT 1 FROM DUAL
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+
+  # Liquibase 配置
+  liquibase:
+    change-log: classpath:liquibase/master.xml
+
+# MyBatis 配置
+mybatis:
+  mapper-locations: classpath:/mapper/*.xml
+  type-aliases-package: com.xu.blog.domain
+  configuration:
+    map-underscore-to-camel-case: true
+
+# MyBatis-Plus 配置
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+
+# 日志配置
+logging:
+  level:
+    com.xu.blog: debug
+
+# DeepSeek API 配置（请使用环境变量设置密钥）
+deepseek:
+  api:
+    url: ${DEEPSEEK_API_URL:https://api.deepseek.com/}
+    key: ${DEEPSEEK_API_KEY:}

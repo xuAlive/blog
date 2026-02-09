@@ -1,0 +1,44 @@
+server:
+  port: ${SERVER_PORT:6102}
+
+spring:
+  application:
+    name: schedule-app
+
+  # 数据源配置（与博客系统共享同一数据库）
+  datasource:
+    url: jdbc:mysql://${DB_HOST:139.196.156.81}:${DB_PORT:3306}/${DB_NAME:blog}?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:Root@123}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+
+    druid:
+      initial-size: 5
+      min-idle: 5
+      max-active: 50
+      max-wait: 60000
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 300000
+      validation-query: SELECT 1
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+
+  # Liquibase 数据库迁移
+  liquibase:
+    enabled: true
+    change-log: classpath:liquibase/master.xml
+
+# MyBatis-Plus 配置
+mybatis-plus:
+  mapper-locations: classpath:/mapper/*.xml
+  type-aliases-package: com.xu.schedule.domain
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+# 日志配置
+logging:
+  level:
+    com.xu.schedule: debug
