@@ -29,8 +29,8 @@ public class ScheduleController {
      */
     @GetMapping("/list")
     public Response<List<Schedule>> getScheduleList(
-            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
-            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate) {
+            @RequestParam("startDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
+            @RequestParam("endDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate) {
         List<Schedule> schedules = scheduleService.getSchedulesByDateRange(startDate, endDate);
         return Response.success(schedules);
     }
@@ -40,8 +40,8 @@ public class ScheduleController {
      */
     @GetMapping("/my")
     public Response<List<Schedule>> getMySchedules(
-            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
-            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate) {
+            @RequestParam("startDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
+            @RequestParam("endDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate) {
         String account = SessionUtil.getCurrentAccount();
         List<Schedule> schedules = scheduleService.getSchedulesByAccount(account, startDate, endDate);
         return Response.success(schedules);

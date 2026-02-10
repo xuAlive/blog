@@ -2,7 +2,6 @@ package com.xu.blog.config;
 
 import com.xu.blog.interceptor.PermissionInterceptor;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -13,18 +12,6 @@ public class WebConfig implements WebMvcConfigurer {
 
     public WebConfig(PermissionInterceptor permissionInterceptor) {
         this.permissionInterceptor = permissionInterceptor;
-    }
-
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        // 添加CORS映射，允许来自特定域的请求访问
-        registry.addMapping("/**")
-                .allowedOriginPatterns("*") // 允许所有来源（使用 patterns 支持 credentials）
-                .allowedMethods("POST", "GET", "PUT", "OPTIONS", "DELETE") // 允许的请求方法
-                .allowedHeaders("*") // 允许的请求头部
-                .exposedHeaders("*") // 暴露的响应头
-                .allowCredentials(true) // 允许携带凭据
-                .maxAge(3600); // 预检请求缓存时间
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.xu.schedule.config;
+package com.xu.calendar.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -24,9 +24,9 @@ public class WebConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         // Token 验证拦截器
         registry.addInterceptor(tokenHandlerAdapter)
-                .addPathPatterns("/schedule/**")
+                .addPathPatterns("/calendar/**")
                 .excludePathPatterns(
-                        "/schedule/health"  // 健康检查接口不需要验证
+                        "/calendar/health"  // 健康检查接口不需要验证
                 );
     }
 }

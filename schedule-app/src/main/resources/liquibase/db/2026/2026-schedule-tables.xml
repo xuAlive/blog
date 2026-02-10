@@ -102,4 +102,36 @@
         </insert>
     </changeSet>
 
+    <!-- 创建员工表 -->
+    <changeSet id="2026-004" author="schedule-app">
+        <createTable tableName="schedule_employee" remarks="员工表">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="employee_code" type="VARCHAR(50)" remarks="员工编号">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="employee_name" type="VARCHAR(100)" remarks="员工姓名">
+                <constraints nullable="false"/>
+            </column>
+            <column name="department" type="VARCHAR(100)" remarks="部门"/>
+            <column name="position" type="VARCHAR(100)" remarks="职位"/>
+            <column name="phone" type="VARCHAR(20)" remarks="联系电话"/>
+            <column name="email" type="VARCHAR(100)" remarks="邮箱"/>
+            <column name="entry_date" type="DATE" remarks="入职日期"/>
+            <column name="status" type="TINYINT" defaultValue="1" remarks="状态：1-在职 2-离职 3-休假"/>
+            <column name="create_time" type="DATETIME" defaultValueComputed="CURRENT_TIMESTAMP" remarks="创建时间"/>
+            <column name="update_time" type="DATETIME" defaultValueComputed="CURRENT_TIMESTAMP" remarks="更新时间"/>
+            <column name="create_by" type="VARCHAR(100)" remarks="创建人"/>
+            <column name="is_delete" type="TINYINT" defaultValue="0" remarks="是否删除：0-否 1-是"/>
+        </createTable>
+
+        <createIndex tableName="schedule_employee" indexName="idx_sch_emp_code">
+            <column name="employee_code"/>
+        </createIndex>
+        <createIndex tableName="schedule_employee" indexName="idx_sch_emp_dept">
+            <column name="department"/>
+        </createIndex>
+    </changeSet>
+
 </databaseChangeLog>

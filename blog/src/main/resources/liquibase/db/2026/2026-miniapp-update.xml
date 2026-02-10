@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <!-- 更新日程管理小程序，添加排班系统小程序 -->
+    <changeSet id="2026-001-update-miniapp-calendar-schedule" author="xubaolin">
+        <sql>
+            -- 更新日程管理，使用前端路由
+            UPDATE miniapp
+            SET route = '/index/calendar',
+                external_link = NULL,
+                intro = '记录日程、设置提醒、周期计划管理',
+                color = '#F5AF19',
+                icon = 'Calendar',
+                update_time = NOW()
+            WHERE name = '日程管理';
+
+            -- 插入排班系统（external_link 用于新窗口打开）
+            INSERT INTO miniapp (name, intro, icon, color, category, tag_type, route, external_link, sort_order, is_delete, create_time, update_time)
+            SELECT '排班系统', '员工排班管理、统计报表、班次定义', 'Clock', '#667EEA', '管理系统', 'primary', NULL, '/#/index/schedule', 7, 0, NOW(), NOW()
+            FROM DUAL
+            WHERE NOT EXISTS (SELECT 1 FROM miniapp WHERE name = '排班系统');
+        </sql>
+    </changeSet>
+
+    <!-- 如果排班系统已存在，更新为同窗口打开（使用route而非external_link） -->
+    <changeSet id="2026-002-update-schedule-miniapp" author="xubaolin">
+        <sql>
+            UPDATE miniapp
+            SET route = '/index/schedule',
+                external_link = NULL,
+                intro = '员工排班管理、统计报表、班次定义',
+                update_time = NOW()
+            WHERE name = '排班系统';
+        </sql>
+    </changeSet>
+
+    <!-- 插入日程管理小程序（如果不存在） -->
+    <changeSet id="2026-003-insert-calendar-miniapp" author="xubaolin">
+        <sql>
+            INSERT INTO miniapp (name, intro, icon, color, category, tag_type, route, external_link, sort_order, is_delete, create_time, update_time)
+            SELECT '日程管理', '记录日程、设置提醒、周期计划管理', 'Calendar', '#F5AF19', '效率工具', 'warning', '/index/calendar', NULL, 6, 0, NOW(), NOW()
+            FROM DUAL
+            WHERE NOT EXISTS (SELECT 1 FROM miniapp WHERE name = '日程管理');
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

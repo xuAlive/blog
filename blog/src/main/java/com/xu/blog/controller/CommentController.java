@@ -39,7 +39,7 @@ public class CommentController {
      * 获取最新评论列表
      */
     @GetMapping("/listLatest")
-    public Response listLatest(@RequestParam(defaultValue = "10") Integer limit) {
+    public Response listLatest(@RequestParam(value = "limit", defaultValue = "10") Integer limit) {
         return commentService.listLatestComments(limit);
     }
 
@@ -47,7 +47,7 @@ public class CommentController {
      * 删除评论
      */
     @PostMapping("/delete")
-    public Response deleteComment(@RequestParam Integer id, @RequestParam String account) {
+    public Response deleteComment(@RequestParam("id") Integer id, @RequestParam("account") String account) {
         return commentService.deleteComment(id, account);
     }
 }
