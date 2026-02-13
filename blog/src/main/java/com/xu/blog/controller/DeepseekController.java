@@ -40,4 +40,29 @@ public class DeepseekController {
         String account = SessionUtil.getCurrentAccount();
         return Response.success(deepseekDialogueInfoService.getCompletionHistoryList(account));
     }
+
+    @PostMapping("/deleteDialogue/{dialogueId}")
+    public Response deleteDialogue(@PathVariable("dialogueId") Long dialogueId){
+        String account = SessionUtil.getCurrentAccount();
+        boolean success = deepseekDialogueInfoService.deleteDialogue(dialogueId, account);
+        if (success) {
+            return Response.success("删除成功");
+        } else {
+            return Response.fail("删除失败");
+        }
+    }
+
+    @GetMapping("/getDialogueCount")
+    public Response getDialogueCount(){
+        String account = SessionUtil.getCurrentAccount();
+        int count = deepseekDialogueInfoService.countDialogueByAccount(account);
+        return Response.success(count);
+    }
+
+    @GetMapping("/checkAdmin")
+    public Response checkAdmin(){
+        String account = SessionUtil.getCurrentAccount();
+        boolean isAdmin = deepseekDialogueInfoService.isAdmin(account);
+        return Response.success(isAdmin);
+    }
 }

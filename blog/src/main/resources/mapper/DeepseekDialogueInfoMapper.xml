@@ -47,4 +47,16 @@
         ORDER BY t.creat_time DESC
     </select>
 
+    <delete id="deleteByDialogueIdAndAccount">
+        DELETE FROM deepseek_dialogue_info
+        WHERE dialogue_id = #{dialogueId}
+        AND account = #{account}
+    </delete>
+
+    <select id="countDialogueByAccount" resultType="int">
+        SELECT COUNT(DISTINCT dialogue_id)
+        FROM deepseek_dialogue_info
+        WHERE account = #{account}
+    </select>
+
 </mapper>

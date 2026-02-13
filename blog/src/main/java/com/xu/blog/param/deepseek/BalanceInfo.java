@@ -1,5 +1,6 @@
 package com.xu.blog.param.deepseek;
 
+import com.alibaba.fastjson2.annotation.JSONField;
 import lombok.Data;
 
 import java.util.List;
@@ -10,8 +11,10 @@ import java.util.List;
 @Data
 public class BalanceInfo {
 
+    @JSONField(name = "is_available")
     private Boolean isAvailable;
 
-    private List<Balance> BalanceInfos;
+    @JSONField(name = "balance_infos")
+    private List<Balance> balanceInfos;
 
 }

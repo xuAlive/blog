@@ -31,6 +31,21 @@ public interface DeepseekDialogueInfoMapper extends BaseMapper<DeepseekDialogueI
      * @return
      */
     List<CompletionHistoryVO> selectCompletionHistory(@Param("account") String account);
+
+    /**
+     * 根据对话ID和账号删除对话
+     * @param dialogueId 对话ID
+     * @param account 用户账号
+     * @return 删除的记录数
+     */
+    int deleteByDialogueIdAndAccount(@Param("dialogueId") Long dialogueId, @Param("account") String account);
+
+    /**
+     * 统计用户对话数量
+     * @param account 用户账号
+     * @return 对话数量
+     */
+    int countDialogueByAccount(@Param("account") String account);
 }
 
 

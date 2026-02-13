@@ -35,4 +35,26 @@ public interface DeepseekDialogueInfoService extends IService<DeepseekDialogueIn
      * @return
      */
     List<CompletionHistoryVO> getCompletionHistoryList(String account);
+
+    /**
+     * 删除对话
+     * @param dialogueId 对话ID
+     * @param account 用户账号
+     * @return 是否删除成功
+     */
+    boolean deleteDialogue(Long dialogueId, String account);
+
+    /**
+     * 统计用户对话数量
+     * @param account 用户账号
+     * @return 对话数量
+     */
+    int countDialogueByAccount(String account);
+
+    /**
+     * 检查用户是否为管理员
+     * @param account 用户账号
+     * @return 是否是管理员
+     */
+    boolean isAdmin(String account);
 }

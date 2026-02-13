@@ -7,6 +7,7 @@ import com.xu.blog.param.po.deepseek.DialogueInfoPO;
 import com.xu.blog.param.vo.ds.CompletionHistoryVO;
 import com.xu.blog.param.vo.ds.CompletionVO;
 import com.xu.blog.service.DeepseekDialogueInfoService;
+import com.xu.blog.service.SysRoleService;
 import com.xu.blog.mapper.DeepseekDialogueInfoMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -28,9 +29,11 @@ import java.util.Objects;
 public class DeepseekDialogueInfoServiceImpl extends ServiceImpl<DeepseekDialogueInfoMapper, DeepseekDialogueInfo> implements DeepseekDialogueInfoService{
 
     private final DeepseekDialogueInfoDao deepseekDialogueInfoDao;
+    private final SysRoleService sysRoleService;
 
-    public DeepseekDialogueInfoServiceImpl(DeepseekDialogueInfoDao deepseekDialogueInfoDao) {
+    public DeepseekDialogueInfoServiceImpl(DeepseekDialogueInfoDao deepseekDialogueInfoDao, SysRoleService sysRoleService) {
         this.deepseekDialogueInfoDao = deepseekDialogueInfoDao;
+        this.sysRoleService = sysRoleService;
     }
 
 
@@ -65,6 +68,28 @@ public class DeepseekDialogueInfoServiceImpl extends ServiceImpl<DeepseekDialogu
     public List<CompletionHistoryVO> getCompletionHistoryList(String account) {
         List<CompletionHistoryVO> historyList = deepseekDialogueInfoDao.selectCompletionHistory(account);
         return historyList;
+    }
+
+    @Override
+    public boolean deleteDialogue(Long dialogueId, String account) {
+        try {
+            int deleted = deepseekDialogueInfoDao.deleteByDialogueIdAndAccount(dialogueId, account);
+            return deleted > 0;
+        } catch (Exception e) {
+            log.error("删除对话失败: dialogueId={}, account={}", dialogueId, account, e);
+            return false;
+        }
+    }
+
+    @Override
+    public int countDialogueByAccount(String account) {
+        return deepseekDialogueInfoDao.countDialogueByAccount(account);
+    }
+
+    @Override
+    public boolean isAdmin(String account) {
+        String roleCode = sysRoleService.getRoleCodeByAccount(account);
+        return "ADMIN".equals(roleCode);
     }
 
 }

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <!-- 为 sys_user 表添加微信相关字段 -->
+    <changeSet id="2026-001-add-wechat-fields-to-sys-user" author="xubaolin">
+        <sql>
+            ALTER TABLE `sys_user`
+                ADD COLUMN `openid` VARCHAR(64) DEFAULT NULL COMMENT '微信openid' AFTER `password`,
+                ADD COLUMN `unionid` VARCHAR(64) DEFAULT NULL COMMENT '微信unionid' AFTER `openid`,
+                ADD COLUMN `wx_nickname` VARCHAR(100) DEFAULT NULL COMMENT '微信昵称' AFTER `unionid`,
+                ADD COLUMN `wx_avatar` VARCHAR(500) DEFAULT NULL COMMENT '微信头像URL' AFTER `wx_nickname`,
+                ADD UNIQUE KEY `uk_openid` (`openid`),
+                ADD KEY `idx_unionid` (`unionid`);
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

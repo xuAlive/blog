@@ -51,4 +51,11 @@ logging:
 deepseek:
   api:
     url: ${DEEPSEEK_API_URL:https://api.deepseek.com/}
-    key: ${DEEPSEEK_API_KEY:}
+    key: ${DEEPSEEK_API_KEY:sk-46bf416ce74d4242842c43d0a21a52f7}
+
+# 微信公众号配置
+wechat:
+  app-id: ${WECHAT_APP_ID:wx1c32639333a13dcb}
+  app-secret: ${WECHAT_APP_SECRET:f9be087be1186342cf96a0249563a0ab}
+  redirect-domain: ${WECHAT_REDIRECT_DOMAIN:https://www.xbl-blog.top}
+

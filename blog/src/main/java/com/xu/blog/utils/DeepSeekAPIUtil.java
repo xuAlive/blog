@@ -26,7 +26,7 @@ public class DeepSeekAPIUtil {
         DeepSeekAPIUtil.url = url;
     }
 
-    @Value("${deepseek.api.key:}")
+    @Value("${deepseek.api.key:sk-46bf416ce74d4242842c43d0a21a52f7}")
     public void setKey(String key) {
         DeepSeekAPIUtil.key = key;
     }

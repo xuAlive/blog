@@ -10,4 +10,6 @@
     <include file="db/2025/2025-create-table.xml" relativeToChangelogFile="true"/>
     <include file="db/2025/2025-update.xml" relativeToChangelogFile="true"/>
     <include file="db/2026/2026-miniapp-update.xml" relativeToChangelogFile="true"/>
+    <include file="db/2026/2026-create-table.xml" relativeToChangelogFile="true"/>
+    <include file="db/2026/2026-update.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

@@ -46,6 +46,30 @@ public class SysUser implements Serializable {
     private String password;
 
     /**
+     * 微信openid
+     */
+    @TableField(value = "openid")
+    private String openid;
+
+    /**
+     * 微信unionid
+     */
+    @TableField(value = "unionid")
+    private String unionid;
+
+    /**
+     * 微信昵称
+     */
+    @TableField(value = "wx_nickname")
+    private String wxNickname;
+
+    /**
+     * 微信头像URL
+     */
+    @TableField(value = "wx_avatar")
+    private String wxAvatar;
+
+    /**
      * 0 否 1 是
      */
     @TableField(value = "is_delete")

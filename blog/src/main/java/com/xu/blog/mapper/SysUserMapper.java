@@ -20,6 +20,11 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
     void deleteUser(@Param("account") String account);
 
     SysUser selectUser(@Param("account") String account,@Param("password") String password,@Param("phone") String phone);
+
+    /**
+     * 根据微信openid查询用户
+     */
+    SysUser selectByOpenid(@Param("openid") String openid);
 }
 
 

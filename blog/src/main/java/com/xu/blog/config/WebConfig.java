@@ -19,13 +19,21 @@ public class WebConfig implements WebMvcConfigurer {
         //token 拦截 - 第一层拦截，验证token并设置用户信息
         registry.addInterceptor(new TokenHandlerAdapter())
                 .addPathPatterns("/blog/**")
-                //只排除登录和注册接口，其他接口都需要验证token
-                .excludePathPatterns("/blog/sys/login", "/blog/sys/register");
+                //排除登录、注册、微信授权接口
+                .excludePathPatterns(
+                    "/blog/sys/login",
+                    "/blog/sys/register",
+                    "/blog/wechat/**"
+                );
 
         //权限拦截 - 第二层拦截，验证用户权限
         registry.addInterceptor(permissionInterceptor)
                 .addPathPatterns("/blog/**")
-                //只排除登录和注册接口，其他接口都需要验证权限
-                .excludePathPatterns("/blog/sys/login", "/blog/sys/register");
+                //排除登录、注册、微信授权接口
+                .excludePathPatterns(
+                    "/blog/sys/login",
+                    "/blog/sys/register",
+                    "/blog/wechat/**"
+                );
     }
 }
