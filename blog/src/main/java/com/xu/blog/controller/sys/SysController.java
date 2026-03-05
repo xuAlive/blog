@@ -1,6 +1,6 @@
 package com.xu.blog.controller.sys;
 
-import com.xu.common.annotation.RequireRole;
+import com.xu.common.annotation.RequirePermission;
 import com.xu.blog.dao.SysUserDao;
 import com.xu.blog.param.po.sys.LoginUserPo;
 import com.xu.blog.param.po.sys.UserInfoPo;
@@ -58,7 +58,7 @@ public class SysController {
      * 获取用户列表
      */
     @GetMapping("/getUserList")
-    @RequireRole("ADMIN")
+    @RequirePermission("system:user:list")
     public Response getUserList(){
         return sysUserInfoService.getUserList();
     }
@@ -71,7 +71,7 @@ public class SysController {
      * @return 分页登录记录
      */
     @GetMapping("/getLoginRecords")
-    @RequireRole("ADMIN")
+    @RequirePermission("system:login:records")
     public Response getLoginRecords(@RequestParam(value = "account", required = false) String account,
                                     @RequestParam(value = "page", defaultValue = "1") int page,
                                     @RequestParam(value = "size", defaultValue = "5") int size){
@@ -83,7 +83,7 @@ public class SysController {
      * 获取登录地点统计信息（地图标点 + 省份饼形图）
      */
     @GetMapping("/getLoginLocationStats")
-    @RequireRole("ADMIN")
+    @RequirePermission("system:login:stats")
     public Response getLoginLocationStats(@RequestParam(value = "account", required = false) String account){
          LoginLocationStatsVO stats = sysUserDao.getLoginLocationStats(account);
          return Response.success(stats);

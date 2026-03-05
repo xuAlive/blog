@@ -3,6 +3,7 @@ package com.xu.blog.controller;
 import com.xu.blog.param.po.blog.CommentListPo;
 import com.xu.blog.param.po.blog.CommentPo;
 import com.xu.blog.service.BlogCommentService;
+import com.xu.common.annotation.RequirePermission;
 import com.xu.common.response.Response;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,6 +24,7 @@ public class CommentController {
      * 添加评论或回复
      */
     @PostMapping("/add")
+    @RequirePermission("comment:add")
     public Response addComment(@RequestBody CommentPo po) {
         return commentService.addComment(po);
     }
@@ -47,6 +49,7 @@ public class CommentController {
      * 删除评论
      */
     @PostMapping("/delete")
+    @RequirePermission("comment:delete")
     public Response deleteComment(@RequestParam("id") Integer id, @RequestParam("account") String account) {
         return commentService.deleteComment(id, account);
     }

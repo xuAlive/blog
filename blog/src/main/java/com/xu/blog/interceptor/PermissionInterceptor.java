@@ -81,6 +81,13 @@ public class PermissionInterceptor implements HandlerInterceptor {
             }
 
             String account = userToken.getAccount();
+
+            // ADMIN角色拥有所有权限，直接放行
+            String userRole = sysRoleService.getRoleCodeByAccount(account);
+            if ("ADMIN".equals(userRole)) {
+                return true;
+            }
+
             boolean hasPermission = sysPermissionService.hasPermission(account, requiredPermission);
 
             if (!hasPermission) {

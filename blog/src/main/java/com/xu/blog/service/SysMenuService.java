@@ -39,4 +39,9 @@ public interface SysMenuService extends IService<SysMenu> {
      * 为角色分配菜单
      */
     boolean assignMenusToRole(Integer roleId, List<Integer> menuIds);
+
+    /**
+     * 根据角色ID获取已分配的菜单ID列表
+     */
+    List<Integer> getMenuIdsByRoleId(Integer roleId);
 }

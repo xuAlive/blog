@@ -1,6 +1,6 @@
 package com.xu.blog.controller;
 
-import com.xu.common.annotation.RequireRole;
+import com.xu.common.annotation.RequirePermission;
 import com.xu.blog.domain.SysPermission;
 import com.xu.blog.service.SysPermissionService;
 import com.xu.common.utils.SessionUtil;
@@ -39,7 +39,7 @@ public class PermissionController {
      * 获取所有权限列表（管理员用）
      */
     @GetMapping("/getAllPermissions")
-    @RequireRole("ADMIN")
+    @RequirePermission("system:permission:manage")
     public Response getAllPermissions() {
         List<SysPermission> permissions = sysPermissionService.getAllValidPermissions();
         return Response.success(permissions);
@@ -49,7 +49,7 @@ public class PermissionController {
      * 新增权限
      */
     @PostMapping("/add")
-    @RequireRole("ADMIN")
+    @RequirePermission("system:permission:manage")
     public Response addPermission(@RequestBody SysPermission permission) {
         boolean result = sysPermissionService.save(permission);
         return result ? Response.success() : Response.error("新增权限失败");
@@ -59,7 +59,7 @@ public class PermissionController {
      * 修改权限
      */
     @PostMapping("/update")
-    @RequireRole("ADMIN")
+    @RequirePermission("system:permission:manage")
     public Response updatePermission(@RequestBody SysPermission permission) {
         boolean result = sysPermissionService.updateById(permission);
         return result ? Response.success() : Response.error("修改权限失败");
@@ -69,10 +69,20 @@ public class PermissionController {
      * 为角色分配权限
      */
     @PostMapping("/assignToRole")
-    @RequireRole("ADMIN")
+    @RequirePermission("system:permission:manage")
     public Response assignPermissionsToRole(@RequestParam("roleId") Integer roleId,
                                              @RequestBody List<Integer> permissionIds) {
         boolean result = sysPermissionService.assignPermissionsToRole(roleId, permissionIds);
         return result ? Response.success() : Response.error("分配权限失败");
+    }
+
+    /**
+     * 获取角色已分配的权限ID列表（用于回显）
+     */
+    @GetMapping("/getPermissionIdsByRoleId")
+    @RequirePermission("system:permission:manage")
+    public Response getPermissionIdsByRoleId(@RequestParam("roleId") Integer roleId) {
+        List<Integer> permissionIds = sysPermissionService.getPermissionIdsByRoleId(roleId);
+        return Response.success(permissionIds);
     }
 }

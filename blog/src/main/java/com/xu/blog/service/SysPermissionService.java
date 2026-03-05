@@ -29,4 +29,9 @@ public interface SysPermissionService extends IService<SysPermission> {
      * 获取所有有效权限列表
      */
     List<SysPermission> getAllValidPermissions();
+
+    /**
+     * 根据角色ID获取已分配的权限ID列表
+     */
+    List<Integer> getPermissionIdsByRoleId(Integer roleId);
 }

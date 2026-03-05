@@ -62,6 +62,8 @@ public class BlogArticleInfoServiceImpl extends ServiceImpl<BlogArticleInfoMappe
         QueryWrapper<BlogArticleInfo> queryWrapper = new QueryWrapper<>();
         if (!StringUtils.isEmpty(po.getAccount())){
             queryWrapper.eq("account",po.getAccount());
+            // 查询用户自己的文章时，排除已删除的
+            queryWrapper.ne("status", -1);
         } else {
             // 博客广场：不传account时只查询已发布的文章
             queryWrapper.eq("status", 1);

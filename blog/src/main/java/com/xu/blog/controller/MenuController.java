@@ -1,6 +1,6 @@
 package com.xu.blog.controller;
 
-import com.xu.common.annotation.RequireRole;
+import com.xu.common.annotation.RequirePermission;
 import com.xu.blog.domain.SysMenu;
 import com.xu.blog.service.SysMenuService;
 import com.xu.common.utils.SessionUtil;
@@ -39,7 +39,7 @@ public class MenuController {
      * 获取所有菜单树（管理员用）
      */
     @GetMapping("/getAllMenus")
-    @RequireRole("ADMIN")
+    @RequirePermission("system:menu:list")
     public Response getAllMenus() {
         List<SysMenu> menuTree = sysMenuService.getAllMenuTree();
         return Response.success(menuTree);
@@ -49,7 +49,7 @@ public class MenuController {
      * 获取菜单列表（平铺，用于分配）
      */
     @GetMapping("/getMenuList")
-    @RequireRole("ADMIN")
+    @RequirePermission("system:menu:list")
     public Response getMenuList() {
         List<SysMenu> menus = sysMenuService.list();
         return Response.success(menus);
@@ -59,7 +59,7 @@ public class MenuController {
      * 新增菜单
      */
     @PostMapping("/add")
-    @RequireRole("ADMIN")
+    @RequirePermission("system:menu:add")
     public Response addMenu(@RequestBody SysMenu menu) {
         boolean result = sysMenuService.saveMenu(menu);
         return result ? Response.success() : Response.error("新增菜单失败");
@@ -69,7 +69,7 @@ public class MenuController {
      * 修改菜单
      */
     @PostMapping("/update")
-    @RequireRole("ADMIN")
+    @RequirePermission("system:menu:update")
     public Response updateMenu(@RequestBody SysMenu menu) {
         boolean result = sysMenuService.updateMenu(menu);
         return result ? Response.success() : Response.error("修改菜单失败");
@@ -79,7 +79,7 @@ public class MenuController {
      * 删除菜单
      */
     @PostMapping("/delete")
-    @RequireRole("ADMIN")
+    @RequirePermission("system:menu:delete")
     public Response deleteMenu(@RequestParam("menuId") Integer menuId) {
         boolean result = sysMenuService.deleteMenu(menuId);
         return result ? Response.success() : Response.error("删除菜单失败");
@@ -89,10 +89,20 @@ public class MenuController {
      * 为角色分配菜单
      */
     @PostMapping("/assignToRole")
-    @RequireRole("ADMIN")
+    @RequirePermission("system:menu:assign")
     public Response assignMenusToRole(@RequestParam("roleId") Integer roleId,
                                        @RequestBody List<Integer> menuIds) {
         boolean result = sysMenuService.assignMenusToRole(roleId, menuIds);
         return result ? Response.success() : Response.error("分配菜单失败");
+    }
+
+    /**
+     * 获取角色已分配的菜单ID列表（用于回显）
+     */
+    @GetMapping("/getMenuIdsByRoleId")
+    @RequirePermission("system:menu:list")
+    public Response getMenuIdsByRoleId(@RequestParam("roleId") Integer roleId) {
+        List<Integer> menuIds = sysMenuService.getMenuIdsByRoleId(roleId);
+        return Response.success(menuIds);
     }
 }

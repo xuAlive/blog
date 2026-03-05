@@ -30,19 +30,19 @@ public class UserController {
     /**
      * 验证手机号，将用户从GUEST升级为USER
      * @param phone 手机号
-     * @param verifyCode 验证码（这里简化处理，实际应该先发送验证码到手机）
      */
     @PostMapping("/verifyPhone")
     @Transactional(rollbackFor = Exception.class)
-    public Response verifyPhone(@RequestParam("phone") String phone,
-                                 @RequestParam("verifyCode") String verifyCode) {
+    public Response verifyPhone(@RequestParam("phone") String phone) {
         String account = SessionUtil.getCurrentAccount();
         if (account == null) {
             return Response.error("未登录");
         }
 
-        // TODO: 实际应该验证验证码是否正确
-        // 这里简化处理，假设验证码正确
+        // 校验手机号格式
+        if (phone == null || !phone.matches("^1[3-9]\\d{9}$")) {
+            return Response.error("手机号格式不正确");
+        }
 
         try {
             // 更新用户手机号和验证状态
@@ -51,8 +51,15 @@ public class UserController {
                 return Response.error("用户不存在");
             }
 
-            if (user.getPhoneVerified() == 1) {
+            if (user.getPhoneVerified() != null && user.getPhoneVerified() == 1) {
                 return Response.error("手机号已验证");
+            }
+
+            // 检查手机号是否已被其他用户绑定
+            SysUser existingUser = sysUserService.getOne(
+                    new QueryWrapper<SysUser>().eq("phone", phone).ne("account", account));
+            if (existingUser != null) {
+                return Response.error("该手机号已被其他用户绑定");
             }
 
             user.setPhone(phone);

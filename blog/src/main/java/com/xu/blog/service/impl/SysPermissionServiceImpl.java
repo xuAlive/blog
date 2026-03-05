@@ -70,4 +70,14 @@ public class SysPermissionServiceImpl extends ServiceImpl<SysPermissionMapper, S
                 .orderByAsc("id");
         return this.list(queryWrapper);
     }
+
+    @Override
+    public List<Integer> getPermissionIdsByRoleId(Integer roleId) {
+        QueryWrapper<SysRolePermission> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("role_id", roleId);
+        List<SysRolePermission> rolePermissions = sysRolePermissionMapper.selectList(queryWrapper);
+        return rolePermissions.stream()
+                .map(SysRolePermission::getPermissionId)
+                .collect(java.util.stream.Collectors.toList());
+    }
 }

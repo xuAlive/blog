@@ -1,6 +1,6 @@
 package com.xu.blog.controller;
 
-import com.xu.common.annotation.RequireRole;
+import com.xu.common.annotation.RequirePermission;
 import com.xu.blog.domain.SysRole;
 import com.xu.blog.service.SysRoleService;
 import com.xu.common.utils.SessionUtil;
@@ -52,7 +52,7 @@ public class RoleController {
      * 获取所有角色列表（管理员用）
      */
     @GetMapping("/getAllRoles")
-    @RequireRole("ADMIN")
+    @RequirePermission("system:role:list")
     public Response getAllRoles() {
         List<SysRole> roles = sysRoleService.list();
         return Response.success(roles);
@@ -62,7 +62,7 @@ public class RoleController {
      * 为用户分配角色
      */
     @PostMapping("/assignToUser")
-    @RequireRole("ADMIN")
+    @RequirePermission("system:role:assign")
     public Response assignRoleToUser(@RequestParam("account") String account,
                                       @RequestParam("roleId") Integer roleId) {
         boolean result = sysRoleService.assignRoleToUser(account, roleId);
@@ -73,7 +73,7 @@ public class RoleController {
      * 新增角色
      */
     @PostMapping("/add")
-    @RequireRole("ADMIN")
+    @RequirePermission("system:role:add")
     public Response addRole(@RequestBody SysRole role) {
         boolean result = sysRoleService.save(role);
         return result ? Response.success() : Response.error("新增角色失败");
@@ -83,7 +83,7 @@ public class RoleController {
      * 修改角色
      */
     @PostMapping("/update")
-    @RequireRole("ADMIN")
+    @RequirePermission("system:role:update")
     public Response updateRole(@RequestBody SysRole role) {
         boolean result = sysRoleService.updateById(role);
         return result ? Response.success() : Response.error("修改角色失败");

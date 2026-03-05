@@ -111,4 +111,14 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
         }
         return tree;
     }
+
+    @Override
+    public List<Integer> getMenuIdsByRoleId(Integer roleId) {
+        QueryWrapper<SysRoleMenu> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("role_id", roleId);
+        List<SysRoleMenu> roleMenus = sysRoleMenuMapper.selectList(queryWrapper);
+        return roleMenus.stream()
+                .map(SysRoleMenu::getMenuId)
+                .collect(Collectors.toList());
+    }
 }

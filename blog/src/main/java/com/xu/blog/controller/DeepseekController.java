@@ -3,6 +3,7 @@ package com.xu.blog.controller;
 import com.xu.blog.ai.deepseek.DSMamage;
 import com.xu.blog.param.po.deepseek.DialogueInfoPO;
 import com.xu.blog.service.DeepseekDialogueInfoService;
+import com.xu.common.annotation.RequirePermission;
 import com.xu.common.param.IdPO;
 import com.xu.common.utils.SessionUtil;
 import com.xu.common.response.Response;
@@ -21,6 +22,7 @@ public class DeepseekController {
     }
 
     @PostMapping("/sendCompletion")
+    @RequirePermission("deepseek:chat")
     public Response sendCompletion(@RequestBody DialogueInfoPO po){
         // 从ThreadLocal获取当前登录用户账号，无需传递HttpServletRequest
         String account = SessionUtil.getCurrentAccount();
@@ -43,6 +45,7 @@ public class DeepseekController {
     }
 
     @PostMapping("/deleteDialogue")
+    @RequirePermission("deepseek:delete")
     public Response deleteDialogue(@RequestBody IdPO po){
         String account = SessionUtil.getCurrentAccount();
         boolean success = deepseekDialogueInfoService.deleteDialogue(po.getId(), account);
